@@ -1,0 +1,6 @@
+yafray (0.0.9) unstable; urgency=low
+
+  * Maintenance Update from 0.0.8, with some improvements to RAM usage and raytracing robustness
+
+ -- Kikko <kikkoxyz@yahoo.it>  Mon,  10 Nov 2003 22:18:03 +0100
+

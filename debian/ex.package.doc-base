@@ -1,0 +1,22 @@
+Document: yafray
+Title: Debian yafray Manual
+Author: <insert document author here>
+Abstract: This manual describes what yafray is
+ and how it can be used to
+ manage online manuals on Debian systems.
+Section: unknown
+
+Format: debiandoc-sgml
+Files: /usr/share/doc/yafray/yafray.sgml.gz
+
+Format: postscript
+Files: /usr/share/doc/yafray/yafray.ps.gz
+
+Format: text
+Files: /usr/share/doc/yafray/yafray.text.gz
+
+Format: HTML
+Index: /usr/share/doc/yafray/html/index.html
+Files: /usr/share/doc/yafray/html/*.html
+
+  

@@ -1,0 +1,7 @@
+# Automatically added by dh_installdocs
+if [ "$1" = "configure" ]; then
+	if [ -d /usr/doc -a ! -e /usr/doc/yafray -a -d /usr/share/doc/yafray ]; then
+		ln -sf ../share/doc/yafray /usr/doc/yafray
+	fi
+fi
+# End automatically added section

@@ -1,0 +1,27 @@
+import sys
+
+Import('config')
+Import('plugin_env')
+
+interface_env = plugin_env.Copy();
+
+if sys.platform == 'win32' :
+	interface_env.Append (CPPDEFINES= ['BUILDING_YAFRAYPLUGIN'])
+
+source_files = ['interface_impl.cc']
+
+interface_env.Append (CPPPATH = ['.','../..','../yafraycore'] + config.dynload.include + config.pthread.include)
+interface_env.Append (LIBPATH = ['../yafraycore'] + config.dynload.libpath + config.pthread.libpath)
+interface_env.Append (LIBS = ['yafraycore'] + config.dynload.libs + config.pthread.libs)
+
+if sys.platform == 'darwin' :
+	interface=interface_env.SharedLibrary (target='yafrayplugin', source=source_files, 
+		SHLIBSUFFIX='.so')
+else:
+	interface=interface_env.SharedLibrary (target='yafrayplugin', source=source_files) 
+
+interface_env.Depends(interface,'../yafraycore')
+interface_env.Install(config.libpath,interface)
+
+
+interface_env.Alias('install_interface',config.libpath)

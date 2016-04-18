@@ -1,0 +1,116 @@
+
+
+$start  = $scene                                            &join_copy  ;
+$scene  = $st_scene $litem $en_scene                        &join_copy1 ;        
+$litem  = $litem   $item                                    &join_litem ;
+$litem  =                                              &join_empty_litem;
+$item   = $shader                                           &join_copy  ;
+$item   = $tex                                              &join_copy  ;
+$item   = $object                                           &join_copy  ;
+$item   = $camera                                           &join_copy  ;
+$item   = $render                                           &join_copy  ;
+$item   = $light                                            &join_copy  ;
+$item   = $filter                                           &join_copy  ;
+$item   = $backg                                            &join_copy  ;
+$item   = $trans                                            &join_copy  ;
+
+
+$shader	= $st_shader $lattr '>' $cllabel $lmod $en_shader   &join_shader;
+
+$cllabel=  $st_attr $llabel $en_attr                        &join_copy1 ;
+
+$trans  = '<' T_TRANS $lattr '>' $litem $en_trans        &join_transform;
+
+$lmod   = $lmod      $mod                                     &join_lmod;
+$lmod   =                                               &join_empty_lmod;
+
+$mod    = '<' T_MODULATOR $lattr '>' $llabel  $en_modulator &join_generic;
+
+
+$lattr  = $lattr     $attr                                  &join_lattr ;
+$lattr  =                                              &join_empty_lattr;
+$col    = $attrf     $attrf     $attrf                      &join_color ;
+$col    = $attrf     $attrf     $attrf  $attrf              &join_colorA;
+$attr   = T_IDE      '='        T_LITE                      &join_attr  ;
+$attr   = T_IDE      '='        T_FLOAT                     &join_attrf ;
+$attrf  = T_IDE      '='        T_FLOAT                     &join_attrf ;
+$label  = '<'        T_IDE      $lattr   '/' '>'            &join_label ;
+$llabel = $llabel    $label                                 &join_llabel;
+$llabel =                                             &join_empty_llabel;
+
+#textures
+
+$tex    = '<' T_TEXTURE $lattr '>' $llabel  $en_tex        &join_generic;
+
+#points
+
+$point  = '<' T_IDE  $attrf     $attrf   $attrf  '/'  '>'   &join_point ;
+$lpoint = $lpoint    $point                                 &join_lpoint;
+$lpoint =                                             &join_empty_lpoint;
+$points = $st_points $lpoint $en_points                     &join_points;
+
+#faces
+
+$face   = '<' T_IDE $lattr   '/'         '>'                &join_face  ;
+$lface  = $lface    $face                                   &join_lface ;
+$lface  =                                              &join_empty_lface;
+$faces  = $st_faces $lface   $en_faces                      &join_faces ;
+
+#mesh
+
+$mesh   = $st_mesh  $lattr   '>' $points  $faces  $en_mesh  &join_mesh  ;
+
+$sphere = $st_sphere $lattr  '>' $point   $en_sphere        &join_sphere;
+
+#object
+$geome  = $redefine                                    			&join_null  ;
+$geome  = $mesh                                             &join_copy  ;
+$geome  = $sphere                                           &join_copy  ;
+$oattr  = '<' T_IDE $col     '/' '>'                        &join_oattr ;
+$loattr = $loattr    $oattr                                 &join_loattr;
+$loattr =                                             &join_empty_loattr;
+$oattrs = $st_attr   $loattr $en_attr                       &join_copy1 ;
+$object = $st_object $lattr  '>' $oattrs $geome $en_object  &join_object;
+
+#camera
+$camera = $st_camera $lattr  '>' $point $point $point $en_camera   &join_camera;
+
+#render
+
+$render = '<' T_RENDER $lattr '>' $llabel  $en_render      &join_generic;
+$filter = '<' T_FILTER $lattr '>' $llabel  $en_filter      &join_generic;
+
+#lights
+$light  = '<' T_LIGHT $lattr '>' $llabel  $en_light        &join_generic;
+
+#background
+$backg  = '<' T_BACKG $lattr '>' $llabel  $en_backg        &join_generic;
+
+$st_scene    =  '<'  T_SCENE     '>'                        &join_null  ;
+$en_scene    =  '<'  '/' T_SCENE '>'                        &join_null  ;
+$st_attr     =  '<'  T_ATTR     '>'                         &join_null  ;
+$en_attr     =  '<'  '/' T_ATTR '>'                         &join_null  ;
+
+$en_modulator=  '<'  '/'  T_MODULATOR  '>'                  &join_null  ;
+$st_shader   =  '<'  T_SHADER                               &join_null  ;
+$en_shader   =  '<'  '/'  T_SHADER     '>'                  &join_null  ;
+$en_tex      =  '<'  '/' T_TEXTURE     '>'                  &join_null  ;
+$st_points   =  '<'  T_POINTS          '>'                  &join_null  ;
+$en_points   =  '<'  '/' T_POINTS      '>'                  &join_null  ;
+$st_faces    =  '<'  T_FACES           '>'                  &join_null  ;
+$en_faces    =  '<'  '/' T_FACES       '>'                  &join_null  ;
+$st_mesh     =  '<'  T_MESH                                 &join_null  ;
+$en_mesh     =  '<'  '/' T_MESH        '>'                  &join_null  ;
+$st_object   =  '<'  T_OBJECT                               &join_null  ;
+$en_object   =  '<'  '/' T_OBJECT      '>'                  &join_null  ;
+$st_camera   =  '<'  T_CAMERA                               &join_null  ;
+$en_camera   =  '<'  '/' T_CAMERA      '>'                  &join_null  ;
+$en_render   =  '<'  '/' T_RENDER      '>'                  &join_null  ;
+$st_sphere   =  '<'  T_SPHERE                               &join_null  ;
+$en_sphere   =  '<'  '/' T_SPHERE      '>'                  &join_null  ;
+$en_filter   =  '<'  '/' T_FILTER      '>'                  &join_null  ;
+$en_light   =  '<'  '/' T_LIGHT      '>'                    &join_null  ;
+$en_trans   =  '<'  '/' T_TRANS      '>'                    &join_null  ;
+$en_backg   =  '<'  '/' T_BACKG      '>'                    &join_null  ;
+$redefine   =  '<'  T_REDEFINE   '/' '>'                    &join_null  ;
+

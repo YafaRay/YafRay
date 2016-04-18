@@ -1,0 +1,28 @@
+import sys
+Import('config')
+Import('plugin_env')
+
+backgs_env = plugin_env.Copy();
+
+if sys.platform == 'win32' :
+	backgs_env.Append (CPPDEFINES= ['BUILDING_YAFRAYPLUGIN'])
+
+
+backgs_env.Append (CPPPATH = ['.','../..','../yafraycore'])
+backgs_env.Append (LIBS = ['yafraycore'])
+backgs_env.Append (LIBPATH = ['../yafraycore'])
+
+hdri=backgs_env.SharedLibrary (target='hdri', source=['hdri.cc'])
+
+backgs_env.Depends(hdri,'../yafraycore')
+backgs_env.Install(config.pluginpath,hdri)
+
+sunsky=backgs_env.SharedLibrary (target='sunsky', source=['sunsky.cc'])
+backgs_env.Depends(sunsky,'../yafraycore')
+backgs_env.Install(config.pluginpath,sunsky)
+
+shaderback=backgs_env.SharedLibrary (target='shaderback', source=['shaderback.cc'])
+backgs_env.Depends(shaderback,'../yafraycore')
+backgs_env.Install(config.pluginpath,shaderback)
+
+backgs_env.Alias('install_backgs',config.pluginpath)

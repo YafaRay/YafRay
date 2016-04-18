@@ -1,0 +1,53 @@
+import sys
+Import('shared_env')
+Import('config')
+core_env = shared_env.Copy();
+
+
+if sys.platform == 'win32' :
+	core_env.Append (CPPDEFINES= ['BUILDING_YAFRAYCORE'])
+
+source_files = ['bound.cc',
+								'buffer.cc',
+								'yafsystem.cc',
+								'tools.cc',
+								'camera.cc',
+								'color.cc',
+								'filter.cc',
+								'matrix4.cc',
+								'object3d.cc',
+								'triangletools.cc',
+								'mesh.cc',
+								'kdtree.cc',
+								'triclip.cc',
+								'reference.cc',
+								'renderblock.cc',
+								'scene.cc',
+								'forkedscene.cc',
+								'threadedscene.cc',
+								'ipc.cc',
+								'ccthreads.cc',
+								'noise.cc',
+								'background.cc',
+								'sphere.cc',
+								'texture.cc',
+								'metashader.cc',
+								'targaIO.cc',
+								'triangle.cc',
+								'vector3d.cc',
+								'photon.cc',
+								'params.cc',
+								'HDR_io.cc',
+								'spectrum.cc' ]
+
+if config.exr.present:
+	source_files.append('EXR_io.cc')
+
+core_env.Append (CPPPATH = ['.','../..'] + config.exr.include + config.pthread.include)
+core_env.Append (LIBPATH = config.exr.libpath + config.pthread.libpath)
+
+core_env.Install(config.libpath,
+core_env.SharedLibrary (target='yafraycore', source=source_files, 
+	LIBS=config.pthread.libs + config.exr.libs))
+
+core_env.Alias('install_core',config.libpath)

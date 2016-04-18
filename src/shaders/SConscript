@@ -1,0 +1,45 @@
+import sys
+
+Import('config')
+Import('plugin_env')
+
+shaders_env = plugin_env.Copy();
+
+if sys.platform == 'win32' :
+	shaders_env.Append (CPPDEFINES= ['BUILDING_YAFRAYPLUGIN'])
+
+
+shaders_env.Append (CPPPATH = ['.','../..','../yafraycore'])
+shaders_env.Append (LIBS = ['yafraycore'])
+shaders_env.Append (LIBPATH = ['../yafraycore'])
+
+jpeg_env = shaders_env.Copy()
+jpeg_env.Append (CPPPATH = config.jpeg.include )
+jpeg_env.Append (LIBS = config.jpeg.libs )
+jpeg_env.Append (LIBPATH = config.jpeg.libpath )
+
+basicshaders=shaders_env.SharedLibrary (target='basicshaders', source=['basicshaders.cc'])
+shaders_env.Depends(basicshaders,'../yafraycore')
+shaders_env.Install(config.pluginpath,basicshaders)
+
+basicblocks=jpeg_env.SharedLibrary (target='basicblocks', source=['basictex.cc',
+																												 						 'basicblocks.cc',
+																												 						 'jpeg.cc',
+																												 						 'bbreg.cc',
+																												 						 'imagebackg.cc'],)
+shaders_env.Depends(basicblocks,'../yafraycore')
+shaders_env.Install(config.pluginpath,basicblocks)
+
+mixblocks=shaders_env.SharedLibrary (target='mixblocks', source=['mixblocks.cc'])
+shaders_env.Depends(mixblocks,'../yafraycore')
+shaders_env.Install(config.pluginpath,mixblocks)
+
+blendershader=shaders_env.SharedLibrary (target='blendershader', source=['blendershader.cc', 'brdf.cc'])
+shaders_env.Depends(blendershader,'../yafraycore')
+shaders_env.Install(config.pluginpath,blendershader)
+
+sss=shaders_env.SharedLibrary (target='sss', source=['sss.cc'])
+shaders_env.Depends(sss,'../yafraycore')
+shaders_env.Install(config.pluginpath,sss)
+
+shaders_env.Alias('install_shaders',config.pluginpath)

@@ -1,0 +1,73 @@
+
+jandro:
+	* Pathlight, and GI in general
+		Code has been mostly rewritten to improve all the GI system 
+		based on this light. Lot of bug fixes and speed ups.
+		* Better handling of antialiasing.
+		* Cache coords changed to screen coords, what makes it faster.
+		* Improved refinement and interpolation.
+		* Refinement stages can be now customized with max_refinement.
+		* New per sample refinement scheme, using same params as cache
+			refinement. Adaptively increases samples where needed.
+
+jandro:
+	* Fixed automake build system.
+
+eeshlo:
+	* Fixed arealight single sample red render bug.
+
+eeshlo:
+	* Fixed white render bug when gpm used with pointlight.
+
+jandro:
+	* Scene size causing artifacts is no longer a problem.
+
+eeshlo:
+	* Spotlight major fix.
+		* Halo fixed.
+		* Now using stratified sampling for faster converging 
+			smoother shadows.
+
+eeshlo:
+	* Camera new ortho mode.
+
+jandro:
+	* Photons memory usage improved in globalphotonlight.
+		* Direction compressed using Jensen scheme.
+		* Color compressed using rgbe format.
+
+jandro:
+	* Build osx package with just scons osxpackage.
+
+jandro:
+	* Plugin working for at least linux, osx and win32, thanks to 
+		pmartin, who gave me the starting point for the msvc build.
+		* Memory coherence mostly fixed for msvc build, but some 
+			bugs might remain still unsolved.
+
+jandro:
+	* Spacial hash table rewritten, better scheme (no longer a hash).
+
+jandro:
+	* Output class can now stop the render, what allows ESC key feature
+		in blender.
+
+jandro:
+	* New accell tree implementation for meshes, now pure BSP. This
+		gives an speed up in most scenes.
+
+jandro:
+	* New render strategy, rendering image blocks (buckets). Improves
+		performance because of cache coherency. Also makes nicer output
+		and we use less memory.
+
+Steve Smith:
+	* New fork/thread render scheme (temporary disabled).
+
+guitargeek:
+	* Added shaderback background type. Takes a shader block input
+		as color for background.
+		* Syntax:
+			  <background type="shaderback" name="world" >	  <input
+			  value="sky" /> </background>
+		* Any block or combination can be used now as background.

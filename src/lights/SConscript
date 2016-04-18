@@ -1,0 +1,64 @@
+import sys
+
+Import('config')
+Import('plugin_env')
+
+lights_env = plugin_env.Copy();
+
+if sys.platform == 'win32' :
+	lights_env.Append (CPPDEFINES= ['BUILDING_YAFRAYPLUGIN'])
+
+lights_env.Append (CPPPATH = ['.','../..','../yafraycore'])
+lights_env.Append (LIBS = ['yafraycore'])
+lights_env.Append (LIBPATH = ['../yafraycore'])
+
+pl_env=lights_env.Copy()
+pl_env.Append (CPPPATH = config.pthread.include)
+pl_env.Append (LIBS = config.pthread.libs)
+pl_env.Append (LIBPATH = config.pthread.libpath)
+
+
+pathlight=pl_env.SharedLibrary (target='pathlight', source=['pathlight.cc',
+																																'pathtools.cc',
+																																'lightcache.cc',
+																																'cacheproxy.cc'])
+lights_env.Depends(pathlight,'../yafraycore');
+lights_env.Install(config.pluginpath,pathlight)
+
+sunlight=lights_env.SharedLibrary (target='sunlight', source=['sunlight.cc'])
+lights_env.Depends(sunlight,'../yafraycore');
+lights_env.Install(config.pluginpath,sunlight)
+
+pointlight=lights_env.SharedLibrary (target='pointlight', source=['pointlight.cc'])
+lights_env.Depends(pointlight,'../yafraycore');
+lights_env.Install(config.pluginpath,pointlight)
+
+photonlight=lights_env.SharedLibrary (target='photonlight', source=['photonlight.cc'])
+lights_env.Depends(photonlight,'../yafraycore');
+lights_env.Install(config.pluginpath,photonlight)
+
+globalphotonlight=lights_env.SharedLibrary (target='globalphotonlight', source=['globalphotonlight.cc'])
+lights_env.Depends(globalphotonlight,'../yafraycore');
+lights_env.Install(config.pluginpath,globalphotonlight)
+
+hemilight=lights_env.SharedLibrary (target='hemilight', source=['hemilight.cc'])
+lights_env.Depends(hemilight,'../yafraycore');
+lights_env.Install(config.pluginpath,hemilight)
+
+spotlight=lights_env.SharedLibrary (target='spotlight', source=['spotlight.cc'])
+lights_env.Depends(spotlight,'../yafraycore');
+lights_env.Install(config.pluginpath,spotlight)
+
+softlight=lights_env.SharedLibrary (target='softlight', source=['softlight.cc'])
+lights_env.Depends(softlight,'../yafraycore');
+lights_env.Install(config.pluginpath,softlight)
+
+arealight=lights_env.SharedLibrary (target='arealight', source=['arealight.cc'])
+lights_env.Depends(arealight,'../yafraycore');
+lights_env.Install(config.pluginpath,arealight)
+
+spherelight=lights_env.SharedLibrary (target='spherelight', source=['spherelight.cc'])
+lights_env.Depends(spherelight,'../yafraycore');
+lights_env.Install(config.pluginpath,spherelight)
+
+lights_env.Alias('install_lights',config.pluginpath)

@@ -1,0 +1,5 @@
+YafRay uses scons (www.scons.org) as build system.
+GNU make has been discontinued.
+
+Please check the Wiki (FAQs) on www.yafray.org for further instructions on
+compiling and installation.

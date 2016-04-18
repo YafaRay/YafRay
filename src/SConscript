@@ -1,0 +1,45 @@
+import sys
+SConscript(['yafraycore/SConscript',
+						'lights/SConscript',
+						'shaders/SConscript',
+						'backgrounds/SConscript',
+						'interface/SConscript'])
+
+Import('config')
+Import('program_env')
+
+loader_env = program_env.Copy()
+
+source_files = ['loader/gram_lex.cc',
+								'loader/gram_loader.cc',
+								'loader/mlex.cc',
+								'loader/msin_general.cc',
+								'loader/msin_object.cc',
+								'loader/msin_shader.cc',
+								'loader/loader.cc',
+								'loader/msin_render.cc',
+								'loader/render.cc'
+								]
+
+libs=['yafraycore'] + config.dynload.libs + config.zlib.libs + config.pthread.libs
+
+if sys.platform == 'win32' :
+	source_files+= [ 'loader/wingetopt.cc']
+	libs+= ['Advapi32']  # Shouldnt be here FIXME
+
+loader_env.Append (CPPPATH = ['..','loader','yafraycore'] + 
+														 config.dynload.include + 
+														 config.zlib.include +
+														 config.pthread.include)
+loader_env.Append (LIBPATH = ['yafraycore'] +
+														 config.dynload.libpath + 
+														 config.zlib.libpath +
+														 config.pthread.libpath)
+
+
+yafray=loader_env.Program (target='yafray', source=source_files, LIBS=libs)
+loader_env.Depends(yafray,'yafraycore')
+loader_env.Install(config.binpath,yafray)
+loader_env.Install(config.confpath,'gram.yafray')
+
+loader_env.Alias('install_loader',[config.binpath,config.confpath])

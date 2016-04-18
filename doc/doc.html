@@ -1,0 +1,121 @@
+
+<html>
+
+<head>
+<title> Noname experimental raytracer doc </title>
+</head>
+
+<body>
+
+<h1> NONAME FAST AND BAD DOCUMENTATION </h1>
+
+<p>
+
+I think is better to explain it in a bottom-up order. So we'll start with
+the basis of the program. The elemental data types that the raytracer uses
+are:
+</p>
+<UL>
+	<li> 3d points (vectors) - vector3d.h </li>
+	<li> Colors (RGB) - color.h </li>
+	<li> 4x4 matrix (transformations) - matrix4x4.h </li>
+</UL>
+<p>
+Those types have some operators defined such as +,-,* in order to perform the
+trivial operations. I think they are intuitive, if you don't know what an 
+operator does, you'll have to read the code or wait for a better doc.
+</p>
+<p>
+Over those objects, we define the virtual class "object3d_t". This class has
+a redeuced set of basic metods for ray intersection and shader handling. So
+you can define whatever type of object (nurbs, mesh, primitive, etc ...) only
+by defining the constructor, and ray intersection (this is the hard work) 
+methods.
+</p>
+
+<h2> RAY SHOOTING </h2>
+
+<p>
+A ray can be represented by a given point and a direction. So two 3d vectors.
+But you will find that instead of getting the intersection with that ray, 
+is easier
+to find the intersection with the Z axis. So when we shoot a ray, we build a
+transformation matrix wich transform the given ray into the Z axis.
+</p>
+<p>
+So imagine you are an object (mesh, nrubs ...). If I want to know where a ray
+intersects with you, I give you the ray-to-Z matrix and its inverse (to save 
+time). You only have to apply yourself that matrix and find where the Z axis
+intersects with you. Then, if it hits you, you apply the inverse 
+matrix to that point and thats all, you'll get the original intersection.
+</p>
+<p>
+This is the reason why in the raytracer, the rays are represented by two
+matrix. The ray-to-Z-axis and its inverse. So the object_t type (an abstract
+type) has this interface:
+</p>
+
+<tt>
+<pre>
+
+class object3d_t
+{
+	public:
+		object3d_t() {radiosity=true;rad_pasive=true;shadow=true;};
+		virtual int type() const =0;
+		virtual void transform(matrix4x4_t &m) =0;
+		virtual vector3d_t toObject(const vector3d_t &p)const=0;
+
+		virtual bool shoot(const matrix4x4_t &rtoz,
+		const matrix4x4_t &ztor,surfacePoint_t &where,bool shadow=false)const=0;
+		
+		virtual bound_t getBound() const =0;
+		void setShader(shader_t *shad) {shader=shad;};
+		shader_t *getShader() const {return shader;};
+		bool useForRadiosity() const  {return radiosity;};
+		void useForRadiosity(bool r) {radiosity=r;};
+		bool reciveRadiosity() const  {return rad_pasive;};
+		void reciveRadiosity(bool r) {rad_pasive=r;};
+		bool castShadows() const  {return shadow;};
+		void castShadows(bool r) {shadow=r;};
+	protected:  
+		shader_t *shader; 
+		bool radiosity; 
+		bool rad_pasive; 
+		bool shadow; 
+}; 
+</pre>
+</tt>
+<p>
+As you see, most methods are basic material properties. Look at the method 
+called <tt> shoot </tt>. It takes the two discussed matrix , a reference to a
+surface point and a bool called <tt> shadow </tt>.<br>
+The surface point is an special type wich holds the <I> hit </I> information.
+It contains data as normal,point, texture coords, and other ray intersection
+variables. It's used to make the shading. So when this method returns <I>true
+</I>, it will fill the surface point with the needed data. You can find the
+<tt> surfacePoint_t </tt> definition in <tt> surface.h </tt>.
+</p>
+<p>
+The shadow parameter is used for shadow detection. When you only want to know
+if the object is intersected and how far of the ray origin, you set it to 
+<I> true </I>. Then the method will skip the normal and other unnecesary data
+calculation.
+</p>
+
+<p>
+Now look at the <tt> getBound </tt> method. It returns a bount_t object, which 
+is the implementation of the bounds containig that object. The bound 
+definition can be found in <tt> bound.h </tt>. And are used for the ray shooting
+acceleration. <br>
+And finaly I gonna explain one more method, the transform method. It's a method
+for setting the object transform from object coordinates to world coordinates.
+When you call this method, you give it a matrix wich could be any composition of
+linear transformations (rotating, moving ...). If an object has a 
+transformation, and you call this method, it will clear the old transformation.
+There is no composition, you have to do all the compositions before calling this
+method.
+</p>
+
+</body>
+</html>
